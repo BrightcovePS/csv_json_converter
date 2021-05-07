@@ -1,3 +1,4 @@
-config.json
 *.csv
 *.json
+node_modules
+!babel.config.json

@@ -1,0 +1,34 @@
+
+{
+  "extends": "eslint:recommended",
+  "rules": {
+      "no-useless-escape": "off",
+      "curly": ["error", "multi-line"],
+      "no-redeclare": 2,
+      "no-use-before-define": 2,
+      "no-unused-vars": 2,
+      "no-undef": 2,
+      "no-mixed-spaces-and-tabs": 1,
+      "no-nested-ternary": 1,
+      "no-var": 2,
+      "semi": [2, "always"],
+      "keyword-spacing": ["error"],
+      "space-before-blocks": ["error"],
+      "object-curly-spacing": ["error", "always"]
+  },
+  "plugins": ["@babel", "json"],
+  "parserOptions": {
+      "ecmaVersion": 2019,
+      "babelOptions": {
+        "plugins": [
+          "@babel/plugin-proposal-class-properties"
+        ]
+      }
+  },
+  "parser": "@babel/eslint-parser",
+  "env": {
+      "node": true,
+      "browser": true,
+      "es6": true
+  }
+}
