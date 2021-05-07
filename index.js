@@ -155,9 +155,9 @@ module.exports = (async () => {
   if(config.alignment === 'V')
     values = transpose(values);
 
-  if(config.headers)
+  if(config.headers) {
     headers = config.headers;
-  else {
+  } else {
     headers = values[0];
     values = values.slice(1);
   }
@@ -169,5 +169,3 @@ module.exports = (async () => {
 
   saveToFile(json);
 })();
-
-//"headers": ["day", "title", "start", "end", "speaker", "image", "description", "executive", "resources"],

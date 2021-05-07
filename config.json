@@ -1,8 +1,0 @@
-{
-  "inputFile": "translations.csv",
-  "headersInFirstLine": true,
-  "alignment": "V",
-  "outputFile": "translation_j.json",
-  "delimiter": ",",
-  "trim": true
-}
