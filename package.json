@@ -1,7 +1,7 @@
 {
-  "name": "csv_converter",
+  "name": "csv_json_converter",
   "version": "1.0.0",
-  "description": "",
+  "description": "A utility for converting CSV files into JSON",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
