@@ -3,23 +3,21 @@ const path = require('path');
 const config = require("./config.json");
 
 module.exports = (async () => {
-  const dataWithIgnores = (str) => {
-    let rows = str.split('\n');
-
-    if(config.ignoreRows) {
-      rows = rows.slice(config.ignoreRows, rows.length);
-    }
-    if(config.ignoreColumns) {
-      console.log(rows[0].length);
-      for(let i=0; i<rows.length; i++)
-        rows[i] = rows[i].substring(config.ignoreColumns, rows[i].length);
-    }
-    return rows.join('\n');
-  }
-
   const openFile = () => {
     return fs.readFileSync(path.join(__dirname, config.inputFile), 'utf8');
   }
+
+  const ignoreLines = (values) => {
+    if(config.skipRows && !isNaN(config.skipRows)) {
+      values = values.slice(config.skipRows);
+    }
+    if(config.skipColumns && !isNaN(config.skipColumns)) {
+      for(let i=0; i<values.length; i++) {
+        values[i] = values[i].slice(config.skipColumns);
+      }
+    }
+    return values;
+  };
 
   const transpose = (values) => {
     const tValues = [];
@@ -36,21 +34,21 @@ module.exports = (async () => {
     return tValues;
   }
 
-  const trimValues = (values) => {
-    const numColumns = values[0].length;
-    for(let i=0; i<values.length; i++) {
-      let j = numColumns - 1;
-      while(j >= 0) {
-        if(values[i][j] === '') {
-          values[i] = values[i].slice(0, j - 1);
-          j--;
-        } else {
-          break;
-        }
-      }
-    }
-    return values;
-  }
+  // const trimValues = (values) => {
+  //   const numColumns = values[0].length;
+  //   for(let i=0; i<values.length; i++) {
+  //     let j = numColumns - 1;
+  //     while(j >= 0) {
+  //       if(values[i][j] === '') {
+  //         values[i] = values[i].slice(0, j - 1);
+  //         j--;
+  //       } else {
+  //         break;
+  //       }
+  //     }
+  //   }
+  //   return values;
+  // }
 
   const trimJSON = (arr) => {
     let jsonArr = arr.slice();
@@ -151,6 +149,8 @@ module.exports = (async () => {
   const data = openFile();
   let values = parseCSV();
   let headers;
+
+  values = ignoreLines(values);
 
   if(config.alignment === 'V')
     values = transpose(values);
