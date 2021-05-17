@@ -7,6 +7,7 @@ A utility for converting CSV files into JSON
 
 * Create the file `config.json` to specify CSV and JSON parameters
 * Execute `npm run convert`
+* You can optionally run `npm run convert -c path/to/config`
 
 
 ### Parameters

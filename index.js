@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const config = require("./config.json");
+const config = process.env.npm_config_c && require(`./${process.env.npm_config_c}`) || require("./config.json");
 
 module.exports = (async () => {
   const openFile = () => {
