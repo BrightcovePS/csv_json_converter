@@ -1,7 +1,7 @@
 {
   "name": "csv_json_converter",
   "version": "1.0.0",
-  "description": "A utility for converting CSV files into JSON",
+  "description": "A utility for converting CSV files into an array of JSON objects",
   "main": "index.js",
   "scripts": {
     "lint": "eslint --ext .js --ext .json",

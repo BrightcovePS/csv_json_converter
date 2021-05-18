@@ -9,7 +9,7 @@ A utility for converting CSV files into an array of JSON objects
 * You can optionally run `npm run convert --c=path/to/config`
 
 
-### Parameters
+## Parameters
 
 | Parameter | Type | Description | Required |
 --|--|--|--|
@@ -24,7 +24,7 @@ A utility for converting CSV files into an array of JSON objects
 | skipColumns | number | Specifies a number of columns to ignore from the left. **These are applied after determining the alignment** | no |
 
 
-### Type Conversion
+## Type Conversion
 
 It's possible to provide information on what types values should be converted to in the final JSON by passing in an `object` instead of a `string` for the corresponding header in the `headers` parameter array.
 `headers` is able to take a combination of `string` or `object` in case no type conversion is needed for a particular header (will use `string` as the default type).
