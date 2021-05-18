@@ -34,22 +34,6 @@ module.exports = (async () => {
     return tValues;
   }
 
-  // const trimValues = (values) => {
-  //   const numColumns = values[0].length;
-  //   for(let i=0; i<values.length; i++) {
-  //     let j = numColumns - 1;
-  //     while(j >= 0) {
-  //       if(values[i][j] === '') {
-  //         values[i] = values[i].slice(0, j - 1);
-  //         j--;
-  //       } else {
-  //         break;
-  //       }
-  //     }
-  //   }
-  //   return values;
-  // }
-
   const trimJSON = (arr) => {
     let jsonArr = arr.slice();
     let i=0;
@@ -124,12 +108,45 @@ module.exports = (async () => {
     return values;
   }
 
+  const castTypes = (values, types) => {
+    for(let r=0; r<values.length; r++) {
+      for(let i=0; i<values[r].length; i++) {
+        if(!types[i] || !types[i].type)
+          continue;
+        switch(types[i].type) {
+          case "string":
+            break;
+          case "number":
+            try {
+              values[r][i] = Number(values[r][i])
+            } catch(err) { }
+            break;
+          case "array":
+            values[r][i] = values[r][i].split(types[i].delimiter || ',');
+            break;
+          default:
+            break;
+        }
+      }
+    }
+    return values;
+  }
+
+  const parseHeader = (header) => {
+    if(typeof header === 'string')
+      return header;
+    else if(typeof header === 'object' && header.name)
+      return header.name;
+    else
+      throw 'Malformed header in config';
+  }
+
   const convertToJSON = (values, headers) => {
     const json = [];
     for(value of values) {
       const obj = {};
       for(let i=0; i<value.length; i++) {
-        const k = headers[i];
+        const k = parseHeader(headers[i]);
         const v = value[i];
         obj[k] = v;
       }
@@ -142,7 +159,7 @@ module.exports = (async () => {
     const jsonString = JSON.stringify(json, null, 4);
     fs.writeFile(path.join(__dirname, config.outputFile), jsonString, err => {
       if(!err)
-        console.log("Wrote to file");
+        console.log('Wrote to file');
     });
   }
 
@@ -152,7 +169,7 @@ module.exports = (async () => {
 
   values = ignoreLines(values);
 
-  if(config.alignment === 'V')
+  if(config.alignment.toLowerCase() === 'h')
     values = transpose(values);
 
   if(config.headers) {
@@ -161,6 +178,8 @@ module.exports = (async () => {
     headers = values[0];
     values = values.slice(1);
   }
+
+  values = castTypes(values, headers);
 
   let json = convertToJSON(values, headers);
 
