@@ -1,12 +1,12 @@
 # CSVConverter
 
-A utility for converting CSV files into JSON
+A utility for converting CSV files into an array of JSON objects
 
 ## Instructions
 
 * Create the file `config.json` to specify CSV and JSON parameters
 * Execute `npm run convert`
-* You can optionally run `npm run convert --c=path/to/config.json`
+* You can optionally run `npm run convert --c=path/to/config`
 
 
 ### Parameters
@@ -15,7 +15,7 @@ A utility for converting CSV files into JSON
 --|--|--|--|
 | inputFile | string | Points to the input CSV file. File path should be relative to project directory | yes |
 | outputFile | string | The resulting JSON file to be generated after processing. File path should be relative to the project directory | yes |
-| alignment | "H"/"V" | Specifies which axis the CSV contents should be read along. For data where cells of the same "type" are vertically listed, this should be "v" | yes |
+| alignment | "H"/"V" | Specifies which axis the CSV contents should be read along. For data specified along rows this should be "V" | yes |
 | delimeter | char | The character separating data fields. Will most likely just be a "," | yes |
 | headersInFirstLine | boolean | Specifies whether to consider the first line (along the specified alignment headers or data. **If *headers* has a value, this is ignored.** These are assessed **after** ignored rows/columns | no |
 | headers | array | A user specified list of headers to use. This should match the number of items in a line based on the *alignment* and on any ignored rows/columns. This is an array of strings that will be used as JSON keys | no
@@ -32,7 +32,8 @@ An example of a header with type information specified:
 
     {
         "name": <header/key name>,
-        "type": <"string" | "number" | "array">,
-        "delimiter": <character to split array values, if type is array>
+        "type": <"string" | "number" | "array" | "bool">,
+        "delimiter": <array delimiter>, // "array" only
+        "true": <value to check for true>, // "bool" only
+        "default": <default value if cell is empty>
     }
-

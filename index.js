@@ -68,6 +68,10 @@ module.exports = (async () => {
     // Ignore carriage returns
     if(value === '\r')
       return null;
+
+    // Remove carriage returns
+    value = value.replace(/\r/g, '');
+
     return value;
   }
 
@@ -113,20 +117,26 @@ module.exports = (async () => {
       for(let i=0; i<values[r].length; i++) {
         if(!types[i] || !types[i].type)
           continue;
-        switch(types[i].type) {
-          case "string":
-            break;
-          case "number":
-            try {
-              values[r][i] = Number(values[r][i])
-            } catch(err) { }
-            break;
-          case "array":
-            values[r][i] = values[r][i].split(types[i].delimiter || ',');
-            break;
-          default:
-            break;
-        }
+        try {
+          switch(types[i].type) {
+            case "number":
+              values[r][i] = Number(values[r][i]);
+              break;
+            case "array":
+              values[r][i] = values[r][i].split(types[i].delimiter || ',');
+              break;
+            case "bool":
+            case "boolean":
+              let valueForTrue = types[i].true.toLowerCase();
+              values[r][i] = values[r][i] && values[r][i].toLowerCase() === valueForTrue;
+              break;
+            case "date":
+              // TODO: include format string to convert properly
+              break;
+            default:
+              break;
+          }
+        } catch(err) {}
       }
     }
     return values;
@@ -141,13 +151,25 @@ module.exports = (async () => {
       throw 'Malformed header in config';
   }
 
+  const getJSONValue = (value, type) => {
+    if(typeof type === 'string')
+      return value;
+    else if(value.length === 0) {
+      if(type.default != undefined)
+        return type.default;
+      // TODO: Maybe infer default values based on types?
+      return null;
+    }
+    return value;
+  }
+
   const convertToJSON = (values, headers) => {
     const json = [];
     for(value of values) {
       const obj = {};
       for(let i=0; i<value.length; i++) {
         const k = parseHeader(headers[i]);
-        const v = value[i];
+        const v = getJSONValue(value[i], headers[i]);
         obj[k] = v;
       }
       json.push(obj);
