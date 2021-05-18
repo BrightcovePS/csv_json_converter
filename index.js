@@ -67,7 +67,7 @@ module.exports = (async () => {
 
     // Ignore carriage returns
     if(value === '\r')
-      return null;
+      return '';
 
     // Remove carriage returns
     value = value.replace(/\r/g, '');
@@ -123,12 +123,13 @@ module.exports = (async () => {
               values[r][i] = Number(values[r][i]);
               break;
             case "array":
-              values[r][i] = values[r][i].split(types[i].delimiter || ',');
+              let delimiter = types[i].delimiter || ',';
+              values[r][i] = values[r][i].includes(delimiter) || values[r][i] ? values[r][i].split(delimiter) : values[r][i];
               break;
             case "bool":
             case "boolean":
               let valueForTrue = types[i].true.toLowerCase();
-              values[r][i] = values[r][i] && values[r][i].toLowerCase() === valueForTrue;
+              values[r][i] = values[r][i] ? values[r][i].toLowerCase() === valueForTrue : values[r][i];
               break;
             case "date":
               // TODO: include format string to convert properly
@@ -157,8 +158,17 @@ module.exports = (async () => {
     else if(value.length === 0) {
       if(type.default != undefined)
         return type.default;
-      // TODO: Maybe infer default values based on types?
-      return null;
+      switch(type.type) {
+        case "number":
+          return 0;
+        case "array":
+          return []
+        case "bool":
+        case "boolean":
+          return false;
+        default:
+          return null;
+      }
     }
     return value;
   }
