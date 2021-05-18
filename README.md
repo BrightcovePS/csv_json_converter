@@ -30,6 +30,7 @@ It's possible to provide information on what types values should be converted to
 `headers` is able to take a combination of `string` or `object` in case no type conversion is needed for a particular header (will use `string` as the default type).
 
 This defines what a header object would look like
+
     {
         "name": <header/key name>,
         "type": <"string" | "number" | "array" | "bool">,
@@ -39,6 +40,7 @@ This defines what a header object would look like
     }
 
 An example of the `headers` parameter for a CSV for a Video Cloud video:
+
     [
         "name",
         "short_description",
