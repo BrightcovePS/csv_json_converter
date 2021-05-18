@@ -39,7 +39,7 @@ This defines what a header object would look like
         "default": <default value if cell is empty>
     }
 
-An example of the `headers` parameter for a CSV for a Video Cloud video:
+An example of the `headers` parameter for a CSV of Video Cloud videos:
 
     [
         "name",
