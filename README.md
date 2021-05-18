@@ -26,10 +26,10 @@ A utility for converting CSV files into an array of JSON objects
 
 ### Type Conversion
 
-It's possible to provide information on what types values should be converted to in the final JSON, by passing in an `object` instead of a `string` in the `headers` parameter. The parameter is able to take a combination of `string` and `object` in case no type conversion is needed for a particular header.
+It's possible to provide information on what types values should be converted to in the final JSON by passing in an `object` instead of a `string` for the corresponding header in the `headers` parameter array.
+`headers` is able to take a combination of `string` or `object` in case no type conversion is needed for a particular header (will use `string` as the default type).
 
-An example of a header with type information specified:
-
+This defines what a header object would look like
     {
         "name": <header/key name>,
         "type": <"string" | "number" | "array" | "bool">,
@@ -37,3 +37,26 @@ An example of a header with type information specified:
         "true": <value to check for true>, // "bool" only
         "default": <default value if cell is empty>
     }
+
+An example of the `headers` parameter for a CSV for a Video Cloud video:
+    [
+        "name",
+        "short_description",
+        "description",
+        {
+            "name": "duration",
+            "type": "number",
+            "default": 0
+        },
+        {
+            "name": "tags",
+            "type": "array",
+            "delimiter": ","
+        },
+        {
+            "name": "status",
+            "type": "bool",
+            "true": "true"
+        }
+        ...
+    ]
