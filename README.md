@@ -23,28 +23,31 @@ A utility for converting CSV files into an array of JSON objects
 | skipRows | number | Specifies a number of rows to ignore from the left. **These are applied after determining the alignment** | no |
 | skipColumns | number | Specifies a number of columns to ignore from the left. **These are applied after determining the alignment** | no |
 
-
 ## Type Conversion
 
 It's possible to provide information on what types values should be converted to in the final JSON by passing in an `object` instead of a `string` for the corresponding header in the `headers` parameter array.
 `headers` is able to take a combination of `string` or `object` in case no type conversion is needed for a particular header (will use `string` as the default type).
 
-This defines what a header object would look like
+A header object can include:
 
     {
         "name": <header/key name>,
-        "type": <"string" | "number" | "array" | "bool">,
+        "type": <"string" | "number" | "array" | "bool" | "custom">,
         "delimiter": <array delimiter>, // "array" only
         "true": <value to check for true>, // "bool" only
+        "transform": <transform function>, // "custom" only
+        "span": <how many fields to encompass> // "custom" only
         "default": <default value if cell is empty>
     }
 
-An example of the `headers` parameter for a CSV of Video Cloud videos:
+An example of the `headers` parameter for a CSV for a Video Cloud video:
 
     [
         "name",
         "short_description",
         "description",
+        "related_link_url",
+        "related_link_text",
         {
             "name": "duration",
             "type": "number",
@@ -62,3 +65,30 @@ An example of the `headers` parameter for a CSV of Video Cloud videos:
         }
         ...
     ]
+
+#### Custom Types
+
+It's possible to define a custom type by specifying `custom` as the type and providing the function: `transform(value, index, values) => custom_value`
+
+Ex: Converting video status to human readable values
+
+    {
+        "name": "status",
+        "type": "custom",
+        "transform": (value) => {
+	        return value === "true" ? "Active" : "Inactive";
+	    }
+    }
+
+Ex: Creating link tags from the `related_link_url` and and `related_link_text` fields
+
+     {
+        "name": "related", // in place of `related_link_url`
+        "type": "custom",
+        "span": 2,
+        "transform": (value, index, values) => {
+	        let url = value;
+	        let text = values[index + 1];
+	        return `<a href="${url}">${text}</a>`;
+	    }
+    }

@@ -113,34 +113,53 @@ module.exports = (async () => {
   }
 
   const castTypes = (values, types) => {
-    for(let r=0; r<values.length; r++) {
-      for(let i=0; i<values[r].length; i++) {
-        if(!types[i] || !types[i].type)
-          continue;
-        try {
-          switch(types[i].type) {
-            case 'number':
-              values[r][i] = Number(values[r][i]);
-              break;
-            case 'array':
-              let delimiter = types[i].delimiter || ',';
-              values[r][i] = values[r][i].includes(delimiter) || values[r][i] ? values[r][i].split(delimiter) : values[r][i];
-              break;
-            case 'bool':
-            case 'boolean':
-              let valueForTrue = types[i].true.toLowerCase();
-              values[r][i] = values[r][i] ? values[r][i].toLowerCase() === valueForTrue : values[r][i];
-              break;
-            case 'date':
-              // TODO: include format string to convert properly
-              break;
-            default:
-              break;
-          }
-        } catch(err) {}
+    const fillerMarker = '__filler__';
+
+    for(let i=0; i<types.length; i++) {
+      if(types[i].type === 'custom' && Number(types[i].span) > 1) {
+        for(j=1; j<types[i].span; j++)
+          types.splice(i + j, 0, fillerMarker);
+        i += types[i].span;
       }
     }
-    return values;
+
+    for(let r=0; r<values.length; r++) {
+      for(let i=0; i<values[r].length; i++) {
+        if(types[i] === fillerMarker)
+          values[r][i] = fillerMarker;
+        else if(!types[i] || !types[i].type)
+          continue;
+        else {
+          try {
+            switch(types[i].type) {
+              case 'number':
+                values[r][i] = Number(values[r][i]);
+                break;
+              case 'array':
+                let delimiter = types[i].delimiter || ',';
+                values[r][i] = values[r][i].includes(delimiter) || values[r][i] ? values[r][i].split(delimiter) : values[r][i];
+                break;
+              case 'bool':
+              case 'boolean':
+                let valueForTrue = types[i].true.toLowerCase();
+                values[r][i] = values[r][i] ? values[r][i].toLowerCase() === valueForTrue : values[r][i];
+                break;
+              case 'custom':
+                if(typeof types[i].transform === 'function')
+                  values[r][i] = types[i].transform(values[r][i], i, values[r]);
+                break;
+              default:
+                break;
+            }
+          } catch(err) {}
+        }
+      }
+      values[r] = values[r].filter(v => v !== fillerMarker);
+    }
+
+    types = types.filter(t => t !== fillerMarker);
+
+    return { values, headers: types };
   }
 
   const parseHeader = (header) => {
@@ -153,12 +172,14 @@ module.exports = (async () => {
   }
 
   const getJSONValue = (value, type) => {
-    if(typeof type === 'string')
+    if(typeof type === 'string' || value === null)
       return value;
     else if(value.length === 0) {
       if(type.default != undefined)
         return type.default;
       switch(type.type) {
+        case 'custom':
+          return value;
         case 'string':
           return '';
         case 'number':
@@ -198,8 +219,8 @@ module.exports = (async () => {
   }
 
   const data = openFile();
-  let values = parseCSV();
-  let headers;
+  var values = parseCSV();
+  var headers;
 
   values = ignoreLines(values);
 
@@ -213,7 +234,7 @@ module.exports = (async () => {
     values = values.slice(1);
   }
 
-  values = castTypes(values, headers);
+  var { values, headers } = castTypes(values, headers);
 
   let json = convertToJSON(values, headers);
 
