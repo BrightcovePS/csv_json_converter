@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const config = process.env.npm_config_c && require(`./${process.env.npm_config_c}`) || require('./config.json');
+const config = process.env.npm_config_config && require(path.join(__dirname, process.env.npm_config_config)) || require('./config.json');
 
 module.exports = (async () => {
   const openFile = () => {
@@ -201,6 +201,8 @@ module.exports = (async () => {
     for(value of values) {
       const obj = {};
       for(let i=0; i<value.length; i++) {
+        if(headers[i] == undefined)
+          continue;
         const k = parseHeader(headers[i]);
         const v = getJSONValue(value[i], headers[i]);
         obj[k] = v;
