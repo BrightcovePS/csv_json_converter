@@ -5,13 +5,18 @@ charset = utf-8
 end_of_line = lf
 indent_size = 2
 indent_style = space
-insert_final_newline = false
+insert_final_newline = true
 trim_trailing_whitespace = true
+
+[*.hbs]
+indent_size = 2
+indent_style = space
+insert_final_newline = false
+trim_trailing_whitespace = false
 
 [*.md]
 indent_size = 4
-trim_trailing_whitespace = true
+trim_trailing_whitespace = false
 
-[*.json]
-indent_size = 4
-trim_trailing_whitespace = true
+[*.yml]
+insert_final_newline = false
