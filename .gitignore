@@ -125,7 +125,8 @@ config.yaml.key
 # localstack generated files
 tmp/
 
-# created files
+# project specific
 *.csv
 *.json
 !babel.config.json
+configs/
