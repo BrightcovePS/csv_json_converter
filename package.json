@@ -19,7 +19,7 @@
     "@babel/eslint-parser": "^7.13.14",
     "@babel/eslint-plugin": "^7.13.16",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
-    "@babel/preset-env": "^7.14.1",
+    "@babel/preset-env": "^7.29.2",
     "chai": "^4.3.4",
     "eslint": "^7.25.0",
     "eslint-plugin-json": "^3.0.0"
